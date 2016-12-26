@@ -10,8 +10,8 @@ while(<DATA>) {
 	my @ar;
 	my $ua;
 	my @tmp;
+
 	@ar = split ' ', $_;
-	$ua = '';
 	$ip = $ar[0];
 	($dtm = $ar[3]) =~ s/[\[\]]+//g;
 	($method = $ar[5]) =~ s/"//g;
@@ -22,8 +22,9 @@ while(<DATA>) {
 	$ua =~ s/["-]+//g;
 
 	if ($method =~ /GET|POST/) {
-		print "$ip, $dtm, $method, $url, $ua\n";
+		print "\"$ip\",\"$dtm\",\"$url\"\n";
 	}
+	$ip = $dtm = $method = $url = $ua = '';
 }
 
 close DATA;

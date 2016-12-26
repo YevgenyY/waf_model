@@ -91,7 +91,7 @@ names(G) <- c("tdiff", "freq")
 ggplot(G, aes(x=tdiff, y=freq)) + geom_point() + ggtitle(names(Y[idx]))
 Y[[idx]][5] # Print UserAgent
 
-###
+### Transform data for ML
 click_count <- lapply(X, function(x) dim( x[1])[1] )
 h50 <- click_count > 50
 Y <- X[h50]
