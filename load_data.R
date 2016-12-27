@@ -29,5 +29,6 @@ for (i in 2:length(X)) {
   df <- rbind(df, X[[i]])
   print(i)
 }
+droplevels(df)
 save(df, file="data/ip_url_tdiff.Rda")
 

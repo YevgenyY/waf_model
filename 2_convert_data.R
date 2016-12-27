@@ -23,7 +23,7 @@ library(plyr)
 urls <- count(df, 'url')
 urls <- urls[order(-urls$freq),]
 save(urls, file="data/urls.Rda")
-urls <- urls[urls$freq >= 100,]
+urls <- urls[urls$freq >= 500,]
 
 # select only frequently used urls
 df <- df[df$url %in% urls$url,]
@@ -38,12 +38,41 @@ dd <- droplevels(dd)
 
 save(dml, file="data/data_ready.Rda")
 
-### Another approach
-### Use just tdiff series
-df <- df[,c(1,3)]
-df <- droplevels(df)
-X <- split(df, df$ip)
-a <- sapply(X, function(x) dim(x)[1])
+make_column <- function (x) {
+  y <- x[!is.na(x)]
+  y
+}
+
+ip1 <- data.frame()
+for (i in 3:nrow(dd)) {
+  cname <- names(dd[i])
+  buf <- dd[,i]
+  ip1 <- cbind(ip1, buf)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
