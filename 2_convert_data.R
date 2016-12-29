@@ -6,6 +6,7 @@ load("data/ip_url_tdiff.Rda")
 df <- df[!df$tdiff > 300,]
 df <- df[df$ip != '127.0.0.1',]
 df <- df[,c(1,3,4)]
+df <- droplevels(df)
 
 ### example of spread function
 #a <- c(rep(1:10, 3))
@@ -38,18 +39,29 @@ dd <- droplevels(dd)
 
 save(dml, file="data/data_ready.Rda")
 
-make_column <- function (x) {
-  y <- x[!is.na(x)]
-  y
+### TDIFF only
+library(plyr)
+df <- df[,c(1,3)]
+dd <- split(df, df$ip)
+
+ips <- data.frame()
+tdiff <- data.frame()
+
+for (i in 1:length(dd)) {
+  ip <- as.data.frame( as.character( dd[[i]]$ip[1] ) )
+  names(ip) <- "ip"
+  x <- data.frame(dd[[i]]$tdiff)
+  
+  ips <- rbind(ips, ip)
+  tdiff <- rbind.fill(tdiff, as.data.frame(t(x)))
+  
+  print(i)
+  
 }
 
-ip1 <- data.frame()
-for (i in 3:nrow(dd)) {
-  cname <- names(dd[i])
-  buf <- dd[,i]
-  ip1 <- cbind(ip1, buf)
-}
+save(ips, tdiff, file="ip_tdiff.Rda")
 
+y <- lapply(dd, function(x) as.character(x$ip[1]))
 
 
 
