@@ -22,7 +22,7 @@ while(<DATA>) {
 	$ua =~ s/["-]+//g;
 
 	if ($method =~ /GET|POST/) {
-		print "\"$ip\",\"$dtm\",\"$url\"\n";
+		print "\"$ip\",\"$dtm\",\"$url\", \"$ua\"\n";
 	}
 	$ip = $dtm = $method = $url = $ua = '';
 }

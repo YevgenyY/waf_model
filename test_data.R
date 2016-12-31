@@ -1,4 +1,4 @@
-setwd('~/work/grcc/waf_model')
+setwd('~/work/waf_model')
 
 df <- read.csv('data/log.csv',header = FALSE, stringsAsFactors = F)
 names(df) <- c('ip', 'time', 'method', 'url', 'ua')
