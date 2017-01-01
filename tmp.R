@@ -2,6 +2,9 @@
 setwd('~/work/waf_model')
 load("data/ip_url_tdiff.Rda")
 
+bulk <- df
+df <- bulk[1:70000,]
+
 # remove records with tdiff > 5 min
 df <- df[!df$tdiff > 300,]
 df <- df[df$ip != '127.0.0.1',]
