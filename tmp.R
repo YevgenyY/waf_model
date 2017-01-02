@@ -50,7 +50,29 @@ ip_sd <- as.data.frame(apply(tdf, 1, sd))
 dml <- cbind(ips, ip_mean, ip_sd)
 names(dml) <- c("ip", "ip_mean", "ip_sd")
 
-### set labels according to access to robots.txt
+### set labels according to access to robots.txt ###
+tmp <- read.csv('data/robots_ip.txt',header = FALSE, 
+                stringsAsFactors=FALSE, sep = " ")
+bots <- as.data.frame(unique(tmp$V8))
+names(bots) <- "ip"
+bots$ip <- as.character(bots$ip)
+rm(tmp)
+
+# set label, 1 means - ip is a bot
+dml$bot <- 0
+dml$bot[dml$ip %in% bots$ip] <- 1
+
+# Create training and testing datasets
+inTrain <- createDataPartition(y=dml$bot, times=1, 
+                               p=0.75, list=FALSE)
+train <- dml[inTrain,]
+test <- dml[-inTrain, ]
+
+# train model
+mod <- glm(bot ~ ip_mean + ip_sd, family = binomial(link='logit'), data=train)
+summary(mod)
+
+pred <- predict(mod, test)
 
 ### Utils ###
 show_ua <- function(x) {
