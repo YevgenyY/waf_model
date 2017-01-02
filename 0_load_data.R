@@ -32,5 +32,5 @@ for (i in 2:length(X)) {
   print(i)
 }
 droplevels(df)
-save(df, file="data/ip_url_tdiff.Rda")
+save(df, ip_ua, file="data/ip_url_tdiff.Rda")
 
