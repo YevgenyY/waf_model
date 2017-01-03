@@ -21,6 +21,11 @@ while(<DATA>) {
 	$ua = join('_', @tmp);
 	$ua =~ s/["-]+//g;
 
+	$ip  =~ s/\"//g;
+	$dtm =~ s/\"//g;
+	$url =~ s/\"//g;
+	$ua  =~ s/\"//g;
+
 	if ($method =~ /GET|POST/) {
 		print "\"$ip\",\"$dtm\",\"$url\", \"$ua\"\n";
 	}
