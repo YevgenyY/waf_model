@@ -3,7 +3,7 @@ setwd('~/work/waf_model')
 load("data/ip_url_tdiff.Rda")
 
 bulk <- df
-df <- bulk[1:200000,]
+df <- bulk[1:500000,]
 
 # remove records with tdiff > 5 min
 df <- df[!df$tdiff > 300,]
@@ -59,8 +59,8 @@ bots$ip <- as.character(bots$ip)
 rm(tmp)
 
 # set label, 1 means - ip is a bot
-dml$bot <- 0
-dml$bot[dml$ip %in% bots$ip] <- 1
+dml$bot <- "man"
+dml$bot[dml$ip %in% bots$ip] <- "bot"
 
 # Create training and testing datasets
 inTrain <- createDataPartition(y=dml$bot, times=1, 
@@ -69,10 +69,11 @@ train <- dml[inTrain,]
 test <- dml[-inTrain, ]
 
 # train model
-mod <- glm(bot ~ ip_mean + ip_sd, family = binomial(link='logit'), data=train)
+mod <- train(bot ~ ip_mean + ip_sd, family = binomial(link='logit'), data=train)
 summary(mod)
-
 pred <- predict(mod, test)
+
+confusionMatrix(pred, test$bot)
 
 ### Utils ###
 show_ua <- function(x) {
