@@ -1,6 +1,7 @@
 setwd('~/work/waf_model')
 
 load_data <- function(fileName) {
+  #df <- read.csv(fileName, header = FALSE, stringsAsFactors = F, nrows=10000)
   df <- read.csv(fileName, header = FALSE, stringsAsFactors = F)
   names(df) <- c('ip', 'time', 'url', 'ua')
   
@@ -22,8 +23,9 @@ load_data <- function(fileName) {
   ### count time delays between clicks
   Y <- X
   TD <- lapply(Y, function(x) abs(c(0,diff(x$time, lag=1))))
-  X <- mapply(cbind, Y, tdiff = TD, SIMPLIFY = FALSE)
   
+  X <- mapply(cbind, Y, tdiff = TD, SIMPLIFY = FALSE)
+
   ### merge data in one dataframe
   #library(plyr)
   #dd <- ldply(X, rbind)
@@ -31,7 +33,7 @@ load_data <- function(fileName) {
   df <- X[[1]]
   for (i in 2:length(X)) {
     df <- rbind(df, X[[i]])
-    print(i, length(X))
+    print(paste(i, length(X), sep = " "))
   }
 
   return(df)
@@ -51,6 +53,8 @@ make_ip_tdiff <- function(df) {
   
   ###
   y <- lapply(l_IP, function(x) as.character(x$ip[1]))
+  COUNT <- lapply(l_IP, function(x) dim(x)[1])
+  
   ip_addrs <- unlist(y, use.names = FALSE)
   
   length_lt_threshold <- function(x) {
@@ -62,6 +66,7 @@ make_ip_tdiff <- function(df) {
   selected <- lapply(y, length_lt_threshold)
   
   tdf <- data.frame() # data frame with tdiff for first 100 clicks
+  click_counts <- c()
   ips <- c() # ip address
   
   for (i in 1:length(selected)) {
@@ -70,18 +75,21 @@ make_ip_tdiff <- function(df) {
       tdf <- rbind(tdf, tmp)
       
       ips <- c(ips, names(selected[i]))
+      click_counts <- c(click_counts, as.numeric(COUNT[[i]]))
       
       # print(tmp)
     }
     print(i)
   }
   ips <- as.data.frame(ips)
+  ip_click_counts <- as.data.frame(click_counts)
   
   ### Calculate mean and sd for each ip
   ip_mean <- as.data.frame(apply(tdf, 1, median))
   ip_sd <- as.data.frame(apply(tdf, 1, sd))
-  dml <- cbind(ips, ip_mean, ip_sd)
-  names(dml) <- c("ip", "ip_mean", "ip_sd")
+  
+  dml <- cbind(ips, ip_mean, ip_sd, ip_click_counts)
+  names(dml) <- c("ip", "ip_mean", "ip_sd", "count")
   
   ### set labels according to access to robots.txt ###
   tmp <- read.csv('data/robots_ip.txt',header = FALSE, 
@@ -98,7 +106,7 @@ make_ip_tdiff <- function(df) {
   return(dml)
 }
 
-df <- load_data("data/log.csv")
-droplevels(df)
-save(df, ip_ua, file="data/ip_url_tdiff.Rda")
+#df <- load_data("data/log.csv")
+#droplevels(df)
+#save(df, ip_ua, file="data/ip_url_tdiff.Rda")
 
