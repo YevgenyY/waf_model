@@ -7,6 +7,7 @@ load('data/bulk.Rda')
 #load("data/ip_ua.Rda") # load ip address - UserAgent
 
 dml <- make_ip_tdiff(bulk)
+save(dml, ip_ua, file="data/dml_ip_ua.Rda")
 # Create training and testing datasets
 library(caret)
 inTrain <- createDataPartition(y=dml$bot, times=1, 
@@ -24,12 +25,17 @@ inTrain <- createDataPartition(y=man$bot, times=1,
 train_norm <- rbind(bots, man[inTrain,])
 
 ### train model #########################################
-mod <- train(bot ~ ip_mean + ip_sd + count, method="glm", data=train)
+mod <- train(bot ~ ip_mean + ip_sd + count, method="glm", data=train_norm)
 summary(mod)
 
 pred <- predict(mod, test)
 cfm <- confusionMatrix(test$bot, pred)
 cfm
+
+
+# show FP, FN
+show_fp(test, pred, 2)
+show_fn(test, pred, 3) 
 
 pred <- predict(mod, train)
 cfm <- confusionMatrix(train$bot, pred)

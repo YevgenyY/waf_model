@@ -51,50 +51,23 @@ make_ip_tdiff <- function(df) {
   df <- df[,c(1,3)]
   l_IP <- split(df, df$ip)
   
-  ###
-  y <- lapply(l_IP, function(x) as.character(x$ip[1]))
-  COUNT <- lapply(l_IP, function(x) dim(x)[1])
+  ### Calculate features
+  IP_ADDRS <- unlist(lapply(l_IP, function(x) as.character(x$ip[1])), use.names = FALSE)
+  COUNT <- unlist(lapply(l_IP, function(x) dim(x)[1]), use.names = FALSE)
+  MEDIAN <- unlist(lapply(l_IP, function(x) mean(x$tdiff)), use.names = FALSE)
+  SD <- unlist(lapply(l_IP, function(x) sd(x$tdiff)), use.names = FALSE)
   
-  ip_addrs <- unlist(y, use.names = FALSE)
-  
-  length_lt_threshold <- function(x) {
-    if (length(x) >= 100)
-      x[1:100]
-  }
-  ### Select ip with more than 100 clicks ###
-  y <- lapply(l_IP, function(x) x$tdiff)
-  selected <- lapply(y, length_lt_threshold)
-  
-  tdf <- data.frame() # data frame with tdiff for first 100 clicks
-  click_counts <- c()
-  ips <- c() # ip address
-  
-  for (i in 1:length(selected)) {
-    if ( length(selected[[i]]) > 0 ) {
-      tmp <- as.data.frame(t(selected[[i]]))
-      tdf <- rbind(tdf, tmp)
-      
-      ips <- c(ips, names(selected[i]))
-      click_counts <- c(click_counts, as.numeric(COUNT[[i]]))
-      
-      # print(tmp)
-    }
-    print(i)
-  }
   ips <- as.data.frame(ips)
   ip_click_counts <- as.data.frame(click_counts)
   
-  ### Calculate mean and sd for each ip
-  ip_mean <- as.data.frame(apply(tdf, 1, median))
-  ip_sd <- as.data.frame(apply(tdf, 1, sd))
-  
-  dml <- cbind(ips, ip_mean, ip_sd, ip_click_counts)
-  names(dml) <- c("ip", "ip_mean", "ip_sd", "count")
-  
+  ### Put it into a single dataframe
+  dml <- data.frame(ip=IP_ADDRS, ip_mean=MEDIAN, ip_sd=SD, count=COUNT)
+  dml <- dml[complete.cases(dml),]
+
   ### set labels according to access to robots.txt ###
   tmp <- read.csv('data/robots_ip.txt',header = FALSE, 
                   stringsAsFactors=FALSE, sep = " ")
-  bots <- as.data.frame(unique(tmp$V8))
+  bots <- as.data.frame(unique(tmp$V1))
   names(bots) <- "ip"
   bots$ip <- as.character(bots$ip)
   rm(tmp)
