@@ -7,7 +7,8 @@ load('data/bulk.Rda')
 #load("data/ip_ua.Rda") # load ip address - UserAgent
 
 dml <- make_ip_tdiff(bulk)
-save(dml, ip_ua, file="data/dml_ip_ua.Rda")
+#save(dml, ip_ua, file="data/dml_ip_ua.Rda")
+#load("data/dml_ip_ua.Rda")
 # Create training and testing datasets
 library(caret)
 inTrain <- createDataPartition(y=dml$bot, times=1, 
@@ -16,16 +17,22 @@ train <- dml[inTrain,]
 test <- dml[-inTrain, ]
 
 ### Normalize data
-bots <- train[train$bot=='bot',]
+bot <- train[train$bot=='bot',]
 man <- train[train$bot!='bot',]
-co <- dim(bots)[1]/dim(man)[1]
+
+
+plot(man$ip_mean, man$ip_sd)
+plot(bot$ip_mean, bot$ip_sd)
+ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
+
+co <- dim(bot)[1]/dim(man)[1]
 inTrain <- createDataPartition(y=man$bot, times=1, 
                                p=co, list=FALSE)
 
 train_norm <- rbind(bots, man[inTrain,])
 
 ### train model #########################################
-mod <- train(bot ~ ip_mean + ip_sd + count, method="glm", data=train_norm)
+mod <- train(bot ~ ip_mean + ip_sd, method="glm", data=train)
 summary(mod)
 
 pred <- predict(mod, test)
