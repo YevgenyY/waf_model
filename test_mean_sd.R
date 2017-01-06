@@ -32,7 +32,7 @@ inTrain <- createDataPartition(y=man$bot, times=1,
 train_norm <- rbind(bots, man[inTrain,])
 
 ### train model #########################################
-mod <- train(bot ~ ip_mean + ip_sd, method="glm", data=train)
+mod <- train(bot ~ ip_mean + ip_sd, method="svm", data=train)
 summary(mod)
 
 pred <- predict(mod, test)
