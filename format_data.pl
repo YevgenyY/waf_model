@@ -6,11 +6,11 @@ open DATA, $ARGV[0] or die "Can't open file $ARGV[0]: $!\n";
 
 open BOT, '>data/robots_ip.txt' or die "Can't open file robot_ip.txt: $!\n";
 
-my ($ip, $dtm, $method, $url);
+my ($ip, $dtm, $method, $url, $type);
 
 while(<DATA>) {
 	my @ar;
-	my $ua;
+	my ($ua, $var);
 	my @tmp;
 
 	@ar = split ' ', $_;
@@ -31,8 +31,12 @@ while(<DATA>) {
 	$ua  = lc($ua);
 	$url = lc($url);
 
+	($url =~ /^[\w|\.|:|\/]+\w+\.(\w+(?=$))/x), $type = $1; 
+
+	$type = 'dir' unless (! $type eq '');
+
 	if ($method =~ /GET|POST/) {
-		print "\"$ip\",\"$dtm\",\"$url\", \"$ua\"\n";
+		print "\"$ip\",\"$dtm\",\"$url\", \"$ua\",\"$type\"\n";
 	}
 
 	# Check if ua is bot or url is robot.txt
