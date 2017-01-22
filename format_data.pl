@@ -31,7 +31,7 @@ while(<DATA>) {
 	$ua  = lc($ua);
 	$url = lc($url);
 
-	($url =~ /^[\w|\.|:|\/]+\w+\.(\w+(?=$))/x), $type = $1; 
+	($url =~ /^[\w|\.|:|\/]+\w+\.(\w+(?=\?|$))/x), $type = $1; 
 
 	$type = 'dir' unless (! $type eq '');
 

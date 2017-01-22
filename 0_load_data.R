@@ -3,7 +3,7 @@ setwd('~/work/waf_model')
 load_data <- function(fileName) {
   #df <- read.csv(fileName, header = FALSE, stringsAsFactors = F, nrows=10000)
   df <- read.csv(fileName, header = FALSE, stringsAsFactors = F)
-  names(df) <- c('ip', 'time', 'url', 'ua')
+  names(df) <- c('ip', 'time', 'url', 'ua', 'type')
   
   # save UserAgent
   ip_ua <- unique(df[,c(1,4)])
