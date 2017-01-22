@@ -63,13 +63,33 @@ man <- dml[dml$bot!='bot',]
 man_ip <- man[, c(1, dim(man)[2]-1, dim(man)[2])]
 man_tp <- man[,-c(1, dim(man)[2]-1, dim(man)[2])]
 
+sapply(bot_tp, function(x) round(mean(x),2))
+sapply(man_tp, function(x) round(mean(x),2))
+
+sapply(bot_tp, function(x) round(sd(x),2))
+sapply(man_tp, function(x) round(sd(x),2))
+
 # plot bot vs man
 library(reshape2)
 library(ggplot2)
 ggplot(data = melt(dml), mapping = aes(x = value)) + aes(fill=bot) +
   geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x')
 
+mean_bot <- as.data.frame(sapply(bot_tp, function(x) round(mean(x),2)))
+mean_bot$bot <- 'bot'
+names(mean_bot) <- c('value', 'bot')
 
+mean_man <- as.data.frame(sapply(man_tp, function(x) round(mean(x),2)))
+mean_man$bot <- 'bot'
+names(mean_man) <- c('value', 'bot')
+
+#ggplot(data = rbind(mean_man, mean_bot))
+
+# plot bot vs man
+library(reshape2)
+library(ggplot2)
+ggplot(data = melt(dml), mapping = aes(x = value)) + aes(fill=bot) +
+  geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x')
 
 ############# Train model #####################
 library(caret)
