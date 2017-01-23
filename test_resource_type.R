@@ -63,11 +63,17 @@ man <- dml[dml$bot!='bot',]
 man_ip <- man[, c(1, dim(man)[2]-1, dim(man)[2])]
 man_tp <- man[,-c(1, dim(man)[2]-1, dim(man)[2])]
 
-sapply(bot_tp, function(x) round(mean(x),2))
-sapply(man_tp, function(x) round(mean(x),2))
+# plot percentage of resources divided by man vs bot
+bot_g <- bot_tp; bot_g$bot <- 'bot'
+man_g <- man_tp; man_g$bot <- 'man'
+dml_g <- as.data.frame(rbind(man_g, bot_g))
+ggplot(dml_g, aes(x=dir, y=jpg, color=bot)) + geom_point()
 
-sapply(bot_tp, function(x) round(sd(x),2))
-sapply(man_tp, function(x) round(sd(x),2))
+# find not null percentages
+bot_mean <- sapply(bot_tp, function(x) round(median(x),2))
+bot_mean[bot_mean !=0 ]
+man_mean <- sapply(man_tp, function(x) round(median(x),2))
+man_mean[man_mean != 0]
 
 # plot bot vs man
 library(reshape2)
