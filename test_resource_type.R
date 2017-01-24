@@ -52,8 +52,10 @@ bots$ip <- as.character(bots$ip)
 dml$bot <- "man"
 dml$bot[dml$ip %in% bots$ip] <- "bot"
 
-############# Analyze data #####################
+save(dml, file="data/dml.Rda")
 
+############# Analyze data #####################
+library(ggplot2)
 # divide characters and numbers
 bot <- dml[dml$bot=='bot',]
 bot_ip <- bot[,c(1, dim(bot)[2]-1, dim(bot)[2])]
@@ -77,7 +79,6 @@ man_mean[man_mean != 0]
 
 # plot bot vs man
 library(reshape2)
-library(ggplot2)
 ggplot(data = melt(dml), mapping = aes(x = value)) + aes(fill=bot) +
   geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x')
 
