@@ -46,6 +46,7 @@ MJ12BOT9 <- which(n=='193.111.140.106')
 MJ12BOT10 <- which(n=='195.154.187.115')
 CR007BOT <- which(n=='188.165.233.228')
 WATCHMANBOT <- which(n=='195.93.246.48')
+WATCHMANBOT <- which(n=='195.93.246.49')
 
 IND <- GOOG
 
