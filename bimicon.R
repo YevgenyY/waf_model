@@ -99,3 +99,6 @@ dml <- dml[complete.cases(dml),]
 dml$bot <- "man"
 dml$bot[dml$ip %in% bot$ip] <- "bot"
 ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
+
+### TODO: check labels again
+
