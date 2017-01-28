@@ -42,9 +42,17 @@ for (i in 1:length(df$url)) {
 bimicon_data_parsed <- df
 save(bimicon_data_parsed, file='data/bimicon_parsed.Rda')
 
+
 ### Extract bot's IPs
+load('data/bimicon_parsed.Rda')
+df <- bimicon_data_parsed
+
 bot_idx <- grep('bot', df$ua)
 bot <- df[bot_idx,]$ip
+bot_idx2 <- grep('robot', df$url)
+bot2 <- df[bot_idx2,]$ip
+bot <- unique(c(bot, bot2))
+
 
 ################# Try second model based on tdiff ########################
 df <- df[,c(1,2,3)]
@@ -97,7 +105,13 @@ dml <- dml[complete.cases(dml),]
 
 # set label, 1 means - ip is a bot
 dml$bot <- "man"
-dml$bot[dml$ip %in% bot$ip] <- "bot"
+dml$bot[dml$ip %in% bot] <- "bot"
+
+# remove outliers
+dml <- dml[dml$ip_mean < 300,]
+dml <- dml[dml$ip_sd < 300,]
+
+library(ggplot2)
 ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
 
 ### TODO: check labels again
