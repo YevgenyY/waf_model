@@ -11,6 +11,7 @@ load("data/bimicon.Rdb")
 
 df <- bimicon_data[,c(4,15,6,9)]
 names(df) <- c('ip', 'time', 'url', 'ua')
+df[1:3,]
 
 url <- df$url[2]
 
@@ -71,7 +72,7 @@ TD <- lapply(Y, function(x) abs(c(0,diff(x$time, lag=1))))
 
 X <- mapply(cbind, Y, tdiff = TD, SIMPLIFY = FALSE)
 
-### merge data in one dataframe
+### merge data into a single dataframe
 #library(plyr)
 #dd <- ldply(X, rbind)
 
@@ -92,7 +93,7 @@ l_IP <- split(df, df$ip)
 ### Calculate features
 IP_ADDRS <- unlist(lapply(l_IP, function(x) as.character(x$ip[1])), use.names = FALSE)
 COUNT <- unlist(lapply(l_IP, function(x) dim(x)[1]), use.names = FALSE)
-MEDIAN <- unlist(lapply(l_IP, function(x) mean(x$tdiff)), use.names = FALSE)
+MEDIAN <- unlist(lapply(l_IP, function(x) median(x$tdiff)), use.names = FALSE)
 SD <- unlist(lapply(l_IP, function(x) sd(x$tdiff)), use.names = FALSE)
 
 ips <- as.data.frame(ips)
@@ -113,5 +114,5 @@ dml <- dml[dml$ip_sd < 300,]
 library(ggplot2)
 ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
 
-### TODO: check labels again
+
 
