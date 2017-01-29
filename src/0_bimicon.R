@@ -51,7 +51,7 @@ bot_idx <- grep('bot', df$ua)
 bot <- df[bot_idx,]$ip
 bot_idx2 <- grep('robot', df$url)
 bot2 <- df[bot_idx2,]$ip
-bot <- unique(c(bot, bot2))
+bot <- unique(c(bot, bot2)); rm(bot, bot2, bot_idx, bot_idx2, bimicon_data_parsed)
 
 
 ################# Try second model based on tdiff ########################
@@ -79,9 +79,7 @@ for (i in 2:length(X)) {
   df <- rbind(df, X[[i]])
   print(paste(i, length(X), sep = " "))
 }
-
 save(df, file='data/bimicon_tdiff.Rda')
-
 
 ######################### Analyse data ####################
 ### TDIFF only
