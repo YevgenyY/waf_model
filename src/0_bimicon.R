@@ -1,4 +1,5 @@
 library(RMySQL)
+setwd('~eugen/work/waf_model')
 ## Load data from remote website
 #mydb = dbConnect(MySQL(), user='stats', password='', dbname='nginx_log', host='bimicon.de')
 #rs = dbSendQuery(mydb, "select * from ngx_log")
@@ -47,11 +48,11 @@ save(bimicon_data_parsed, file='data/bimicon_parsed.Rda')
 load('data/bimicon_parsed.Rda')
 df <- bimicon_data_parsed
 
-bot_idx <- grep('bot', df$ua)
+bot_idx <- grep('bot', ignore.case = TRUE, df$ua)
 bot <- df[bot_idx,]$ip
 bot_idx2 <- grep('robot', df$url)
 bot2 <- df[bot_idx2,]$ip
-bot <- unique(c(bot, bot2)); rm(bot, bot2, bot_idx, bot_idx2, bimicon_data_parsed)
+bot <- unique(c(bot, bot2)); rm(bot2, bot_idx, bot_idx2, bimicon_data_parsed)
 
 
 ################# Try second model based on tdiff ########################
