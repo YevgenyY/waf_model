@@ -35,7 +35,7 @@ for (i in 1:length(Y)) {
 # Normalize numbers
 dml[is.na(dml)] <- 0
 dml_sum <- apply(dml, 1, sum)
-dml <- round(dml / dml_sum, 2)
+dml <- round(dml / dml_sum, 4)
 dml$all <- dml_sum
 
 # Add ip addresses
@@ -55,6 +55,7 @@ dml$bot[dml$ip %in% bots$ip] <- "bot"
 save(dml, file="data/dml.Rda")
 
 ############# Analyze data #####################
+load('data/dml.Rda')
 library(ggplot2)
 # divide characters and numbers
 bot <- dml[dml$bot=='bot',]
@@ -72,9 +73,9 @@ dml_g <- as.data.frame(rbind(man_g, bot_g))
 ggplot(dml_g, aes(x=dir, y=jpg, color=bot)) + geom_point()
 
 # find not null percentages
-bot_mean <- sapply(bot_tp, function(x) round(median(x),2))
+bot_mean <- sapply(bot_tp, function(x) round(median(x),4))
 bot_mean[bot_mean !=0 ]
-man_mean <- sapply(man_tp, function(x) round(median(x),2))
+man_mean <- sapply(man_tp, function(x) round(median(x),4))
 man_mean[man_mean != 0]
 
 # plot bot vs man
@@ -82,11 +83,15 @@ library(reshape2)
 ggplot(data = melt(dml), mapping = aes(x = value)) + aes(fill=bot) +
   geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x')
 
-mean_bot <- as.data.frame(sapply(bot_tp, function(x) round(mean(x),2)))
+ggplot(data = melt(dml), mapping = aes(x = value)) + aes(fill=bot) +
+  geom_histogram(bins = 10) + facet_wrap(~variable, scales = 'free_x')
+
+
+mean_bot <- as.data.frame(sapply(bot_tp, function(x) round(mean(x),4)))
 mean_bot$bot <- 'bot'
 names(mean_bot) <- c('value', 'bot')
 
-mean_man <- as.data.frame(sapply(man_tp, function(x) round(mean(x),2)))
+mean_man <- as.data.frame(sapply(man_tp, function(x) round(mean(x),4)))
 mean_man$bot <- 'bot'
 names(mean_man) <- c('value', 'bot')
 
