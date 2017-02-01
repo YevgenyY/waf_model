@@ -124,3 +124,5 @@ dml <- dml[dml$ip_sd < 300,]
 library(ggplot2)
 ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
 ```
+
+
