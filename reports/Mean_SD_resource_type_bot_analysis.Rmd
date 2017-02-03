@@ -59,7 +59,7 @@ save(df, file='data/bimicon_tdiff.Rda')
 ```
 
 ## Plotting MEAN and SD
-Having time interval between records we can extract features - mean and standard deviation. After extracting features we build a plot illustrating the difference between bots and people's access to web site.
+Having time interval between records we can extract features - mean and standard deviation. After extracting features we build a plot illustrating the difference between bots and people's access to web site. 
 
 ```{r, calculate_mean_and_sd_plot_it}
 library(plyr)
@@ -88,7 +88,7 @@ dml <- dml[dml$ip_mean < 300,]
 dml <- dml[dml$ip_sd < 300,]
 
 library(ggplot2)
-ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=2)
+ggplot(dml, aes(x=ip_mean, y=ip_sd, colour=bot)) + geom_point(size=3)
 
 ```
 
