@@ -31,7 +31,7 @@ trafIn <- df[grepl('^10\\.', df$dst_ip),]
 trafOut <- df[!grepl('^10\\.', df$dst_ip),]
 
 trafIn[1,]
-dst <- aggregate(trafIn[,5], by=list(x$dst_ip), function(x) round(mean(x),2)); names(dst) <- c('ip', 'pkt_mean_in')
+dst <- aggregate(trafIn[,5], by=list(trafIn$dst_ip), function(x) round(mean(x),2)); names(dst) <- c('ip', 'pkt_mean_in')
 dst$pkt_mean_out <- aggregate_ip(trafIn, 6, fun=median)
 dst$pkt_median_in <- aggregate_ip(trafIn, 5, fun=median)
 dst$pkt_median_out <- aggregate_ip(trafIn, 6, fun=median)
@@ -48,4 +48,12 @@ dst$pkt_tcp_out_sd <- aggregate_ip(trafIn, 8, fun=function(x) round(sd(x),2))
 # order by pps mean
 pps_sorted <- dst[order(dst$pkt_mean_in,decreasing = TRUE),] 
 pps_sorted <- pps_sorted[complete.cases(pps_sorted),]
+
+rownames(pps_sorted) <- c(1:dim(pps_sorted)[1])
+
+top10 <- pps_sorted[1:10,]
+
+library(ggplot2)
+ggplot(data=top10, aes(x=ip, y=pkt_median_in)) + geom_line()
+
 
